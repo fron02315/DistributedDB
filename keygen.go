@@ -4,9 +4,6 @@ import (
   //Keygen and print
 	"crypto/rand"
 	"fmt"
-  //Save file
-  //"bufio"
-//  "io/ioutil"
   "os"
 )
 
