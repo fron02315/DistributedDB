@@ -9,7 +9,7 @@ The project is divided into three part.
 * File retrieval -> FOCUS ON THIS :)
 
 ### Initiate the system 
-//Progress HERE
 * Generates encryption key (AES-128 yeah :v)
+//Progress HERE
 * Encrypts the file collection and inverted index (In form of:: "keyword", bitmap). Bitmap should be n-bit where n is number of document in file collection
 * Send it to network (aka. nearest node)
