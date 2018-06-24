@@ -40,7 +40,7 @@ func readkey()([]byte){
   return key
 }
 
-func encryptfile(infile string, outfile string){
+func Encryptfile(infile string, outfile string){
   key := readkey()
 	// NewCipher calls. (Obviously don't use this example key for anything
 	// real.) If you want to convert a passphrase to a key, use a suitable
@@ -73,7 +73,7 @@ func encryptfile(infile string, outfile string){
 	// be secure.
 }
 
-func decryptfile(infile string, outfile string){
+func Decryptfile(infile string, outfile string){
   key := readkey()
 
   ciphertext, err  := ioutil.ReadFile(infile)
@@ -105,6 +105,6 @@ func decryptfile(infile string, outfile string){
 }
 
 //func main() {
-//  encryptfile("1","a_aes.txt")
-//  decryptfile("a_aes.txt","test.txt")
+  //Encryptfile("1","a_aes.txt")
+  //Decryptfile("a_aes.txt","test.txt")
 //}

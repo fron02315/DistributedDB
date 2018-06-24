@@ -1,4 +1,4 @@
-package keygen
+package init
 
 import (
 	"crypto/rand"
@@ -18,7 +18,7 @@ func genkey() (string){
   return fmt.Sprintf("%x\n",Key)
 }
 
-func keygen(path string){
+func Keygen(path string){
 	Key1 := genkey()
 	Key2 := genkey()
   Key3 := genkey()
@@ -45,6 +45,6 @@ func keygen(path string){
 }
 
 //func main() {
-	//keygen("dat2")
+	//Keygen("dat2")
 
 //}
