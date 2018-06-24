@@ -8,12 +8,6 @@ The project is divided into three part.
 * Search the file address
 * File retrieval -> FOCUS ON THIS :)
 
-DistributedDB
-
-├──Init
-
-└──DB (Progress...)
-
 ### Initiate the system 
 * Generates encryption key (AES-128 yeah :v)
 
