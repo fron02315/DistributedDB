@@ -1,4 +1,4 @@
-package main
+package AES
 
 import (
 	"crypto/aes"
@@ -104,7 +104,7 @@ func decryptfile(infile string, outfile string){
   check(err)
 }
 
-func main() {
-  encryptfile("1","a_aes.txt")
-  decryptfile("a_aes.txt","test.txt")
-}
+//func main() {
+//  encryptfile("1","a_aes.txt")
+//  decryptfile("a_aes.txt","test.txt")
+//}
