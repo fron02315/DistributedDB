@@ -1,4 +1,4 @@
-package AES
+package init
 
 import (
 	"crypto/aes"
