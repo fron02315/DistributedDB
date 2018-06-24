@@ -9,7 +9,9 @@ The project is divided into three part.
 * File retrieval -> FOCUS ON THIS :)
 
 DistributedDB
+
 ├──Init
+
 └──DB (Progress...)
 
 ### Initiate the system 
