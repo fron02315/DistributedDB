@@ -104,7 +104,98 @@ func Decryptfile(infile string, outfile string){
   check(err)
 }
 
+func keykeyword()([]byte,[]byte){
+  // Load your secret key from a safe place and reuse it across multiple
+  f, err := os.Open("dat2")
+  check(err)
+
+	//read key for keyword1
+  o3, err := f.Seek(0, 0)
+  check(err)
+  b3 := make([]byte, 33)
+  n3, err := f.Read(b3)
+  check(err)
+  fmt.Printf("%d bytes @ %d: %s\n", n3, o3, string(b3))
+
+  _, err = f.Seek(0, 0)
+  check(err)
+
+	key1, _ := hex.DecodeString(string(b3))
+
+	//read key for keyword2
+	o2, err := f.Seek(33, 0)
+	check(err)
+	b2 := make([]byte, 33)
+	n2, err := f.Read(b2)
+	check(err)
+	fmt.Printf("%d bytes @ %d: %s\n", n2, o2, string(b2))
+
+	_, err = f.Seek(0, 0)
+	check(err)
+
+	key2, _ := hex.DecodeString(string(b2))
+
+  f.Close()
+  return key1, key2
+}
+
+func EncryptedIndex(keyword string)([]byte,[]byte){
+	//retrieve key
+	keywordkey1, keywordkey2 := keykeyword()
+	/*fmt.Println(keywordkey1)
+	fmt.Println(keywordkey2)*/
+
+	// Load your secret key from a safe place and reuse it across multiple
+  // NewCipher calls. (Obviously don't use this example key for anything
+	// real.) If you want to convert a passphrase to a key, use a suitable
+ 	// package like bcrypt or scrypt.
+	plaintext := []byte(keyword)
+
+	//For key1
+	block, err := aes.NewCipher(keywordkey1)
+	if err != nil {
+		panic(err)
+	}
+	ciphertext1 := make([]byte, aes.BlockSize+len(plaintext))
+	iv := ciphertext1[:aes.BlockSize]
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		panic(err)
+	}
+	stream := cipher.NewCFBEncrypter(block, iv)
+	stream.XORKeyStream(ciphertext1[aes.BlockSize:], plaintext)
+
+	//For key2
+	block2, err := aes.NewCipher(keywordkey2)
+	if err != nil {
+		panic(err)
+	}
+	ciphertext2 := make([]byte, aes.BlockSize+len(plaintext))
+	iv2 := ciphertext2[:aes.BlockSize]
+	if _, err := io.ReadFull(rand.Reader, iv2); err != nil {
+		panic(err)
+	}
+	stream2 := cipher.NewCFBEncrypter(block2, iv2)
+	stream2.XORKeyStream(ciphertext2[aes.BlockSize:], plaintext)
+
+
+	return ciphertext1, ciphertext2
+}
+
 //func main() {
-  //Encryptfile("1","a_aes.txt")
-  //Decryptfile("a_aes.txt","test.txt")
+	/*keyword := "Fon"
+
+
+	//Call function
+	//Filename := "dat2"
+	//initiate.Keygen(Filename)
+
+
+	//ciphertext for token and gamma
+	token, gamma:= initiate.EncryptedIndex(keyword)
+	fmt.Println(keyword)
+	fmt.Printf("%x\n", token)
+	fmt.Printf("%x\n", gamma)
+
+	//initiate.Encryptfile("1","a_aes.txt")
+	/initiate.Decryptfile("a_aes.txt","test.txt")*/
 //}
