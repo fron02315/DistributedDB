@@ -11,7 +11,7 @@ The project is divided into three part.
 ### Initiate the system 
 * Generates encryption key (AES-128 yeah :v)
 
-//Progress HERE (update: the update value is not show in the select result- Cannot fix)
-
+//Progress HERE: 
+fix
 * Encrypts the file collection and inverted index (In form of:: "keyword", bitmap). Bitmap should be n-bit where n is number of document in file collection
 * Send it to network (aka. nearest node)
