@@ -48,7 +48,7 @@ The project is divided into three part.
 * Otherwise, sends the wantlist to neighbor node.
 * Repeat them until received the "cancle" message.
 
-##Implementation guides
+## Implementation guides
 
 (//**TODO!!** - not finished :-( yeah... \m/)
 
