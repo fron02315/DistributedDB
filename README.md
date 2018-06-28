@@ -11,6 +11,21 @@ The project is divided into three part.
 * Search the file address
 * File retrieval -> FOCUS ON THIS :)
 
+
+```Bash
+> Overview
+src                 
+├── main  # Main source code folder
+│   ├── init
+│   │    ├── AES.go
+│   │    ├── keygen.go
+│   │    └── database.go
+│   └── main-initiate.go #Set up
+├── pkg        
+└── bin          
+ 
+```
+
 ### Initiate the system 
 //Client side
 * Generates encryption key (AES-128 yeah :v)
