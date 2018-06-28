@@ -11,8 +11,8 @@ The project is divided into three part.
 ### Initiate the system 
 * Generates encryption key (AES-128 yeah :v)
 * Encrypts the file collection.
-
-//Progress HERE: store them on the database
-
 * Encrypts inverted index (In form of: "keyword", "bitmap"). Bitmap should be n-bit where n is number of document in file collection
 * Send it to network (aka. nearest node)
+//Progress HERE: store them on the database
+
+### Search the file system
