@@ -5,11 +5,14 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/hex"
+	"crypto/md5"
+	"encoding/base64"
 	"fmt"
 	"io"
   "os"
   "bytes"
   "io/ioutil"
+	"errors"
 )
 
 func check(e error) {
@@ -79,7 +82,6 @@ func Decryptfile(infile string, outfile string){
   ciphertext, err  := ioutil.ReadFile(infile)
   check(err)
 
-
 	block, err := aes.NewCipher(key)
   check(err)
 
@@ -133,69 +135,113 @@ func keykeyword()([]byte,[]byte){
 	_, err = f.Seek(0, 0)
 	check(err)
 
-	key2, _ := hex.DecodeString(string(b2))
+	 key2, _ := hex.DecodeString(string(b2))
 
   f.Close()
   return key1, key2
 }
 
-func EncryptedIndex(keyword string)([]byte,[]byte){
+func KeyGenBitswap(keyword string)(string, string){
 	//retrieve key
-	keywordkey1, keywordkey2 := keykeyword()
-	/*fmt.Println(keywordkey1)
-	fmt.Println(keywordkey2)*/
+	key1, key2 := keykeyword()
+
+	keywordkey1 := string(key1)
+	keywordkey2 := string(key2)
+
+	//Hash for token
+	output := fmt.Sprintf(keywordkey1 , keyword)
+	hasher := md5.New()
+  hasher.Write([]byte(output))
+  token := hex.EncodeToString(hasher.Sum(nil))
+	//fmt.Println(token)
+
+	//Hash for gamma
+	output2 := fmt.Sprintf(keywordkey2, keyword)
+	hasher2 := md5.New()
+	hasher2.Write([]byte(output2))
+	gamma := hex.EncodeToString(hasher2.Sum(nil))
+	//fmt.Println(gamma)
 
 	// Load your secret key from a safe place and reuse it across multiple
   // NewCipher calls. (Obviously don't use this example key for anything
 	// real.) If you want to convert a passphrase to a key, use a suitable
  	// package like bcrypt or scrypt.
-	plaintext := []byte(keyword)
 
-	//For key1
-	block, err := aes.NewCipher(keywordkey1)
+	return token, gamma
+}
+
+func Encryptkeyword(message string, keyword string)(string, string, string) {
+	token, gamma := KeyGenBitswap(keyword)
+
+	key := []byte(gamma)
+	plainText := []byte(message)
+	block, err := aes.NewCipher(key)
 	if err != nil {
-		panic(err)
+
 	}
-	ciphertext1 := make([]byte, aes.BlockSize+len(plaintext))
-	iv := ciphertext1[:aes.BlockSize]
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-		panic(err)
+
+	//IV needs to be unique, but doesn't have to be secure.
+	//It's common to put it at the beginning of the ciphertext.
+	cipherText := make([]byte, aes.BlockSize+len(plainText))
+	iv := cipherText[:aes.BlockSize]
+	if _, err = io.ReadFull(rand.Reader, iv); err != nil {
+
 	}
+
 	stream := cipher.NewCFBEncrypter(block, iv)
-	stream.XORKeyStream(ciphertext1[aes.BlockSize:], plaintext)
+	stream.XORKeyStream(cipherText[aes.BlockSize:], plainText)
 
-	//For key2
-	block2, err := aes.NewCipher(keywordkey2)
+	//returns to base64 encoded string
+	encmess := base64.URLEncoding.EncodeToString(cipherText)
+	return encmess , token, gamma
+}
+
+func Decryptkeyword(key []byte, securemess string) (string) {
+	cipherText, err := base64.URLEncoding.DecodeString(securemess)
 	if err != nil {
-		panic(err)
-	}
-	ciphertext2 := make([]byte, aes.BlockSize+len(plaintext))
-	iv2 := ciphertext2[:aes.BlockSize]
-	if _, err := io.ReadFull(rand.Reader, iv2); err != nil {
-		panic(err)
-	}
-	stream2 := cipher.NewCFBEncrypter(block2, iv2)
-	stream2.XORKeyStream(ciphertext2[aes.BlockSize:], plaintext)
 
+	}
 
-	return ciphertext1, ciphertext2
+	block, err := aes.NewCipher(key)
+	if err != nil {
+
+	}
+
+	if len(cipherText) < aes.BlockSize {
+		err = errors.New("Ciphertext block size is too short!")
+
+	}
+
+	iv := cipherText[:aes.BlockSize]
+	cipherText = cipherText[aes.BlockSize:]
+
+	stream := cipher.NewCFBDecrypter(block, iv)
+	// XORKeyStream can work in-place if the two arguments are the same.
+	stream.XORKeyStream(cipherText, cipherText)
+
+	decodedmess := string(cipherText)
+	return decodedmess
 }
 
 //func main() {
-	/*keyword := "Fon"
-
 
 	//Call function
 	//Filename := "dat2"
 	//initiate.Keygen(Filename)
 
+	//Encryptfile("1","a_aes.txt")
+	//Decryptfile("a_aes.txt","test.txt")
 
-	//ciphertext for token and gamma
-	token, gamma:= initiate.EncryptedIndex(keyword)
+	//Keyword encrypytion
+	/*cipher, token, gamma := Encryptkeyword(bitmap, keyword)
+	fmt.Println(cipher)
 	fmt.Println(keyword)
-	fmt.Printf("%x\n", token)
-	fmt.Printf("%x\n", gamma)
+	fmt.Println(token)
+	fmt.Println(gamma) */
 
-	//initiate.Encryptfile("1","a_aes.txt")
-	/initiate.Decryptfile("a_aes.txt","test.txt")*/
+	//This section is keyword decryption-> take bitmap to retrieve the files
+	/*key := []byte(gamma)
+	word := Decryptkeyword(key,cipher)
+	fmt.Println(word)*/
+
 //}
