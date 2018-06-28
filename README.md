@@ -36,6 +36,8 @@ The project is divided into three part.
 
 
 ```
-It doesn’t matter who you are or what you do. Just remember this one thing. Someone loves you more than you love yourself. I will cheer you on as well. I love you.
+It doesn’t matter who you are or what you do. Just remember this one thing. 
+Someone loves you more than you love yourself. I will cheer you on as well.
+I love you.
 #JinKi :-)💕🌞
 ```
