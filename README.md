@@ -34,7 +34,9 @@ The project is divided into three part.
 * Otherwise, sends the token to next hop.
 
 ### File retrieval
+
 (//**TODO!!** - not finished :-( yeah... \m/)
+
 //Client side
 * Decrypts the index to get the Bitmap
 * Extracts the fileID from Bitmap
@@ -47,7 +49,9 @@ The project is divided into three part.
 * Repeat them until received the "cancle" message.
 
 ##Implementation guides
+
 (//**TODO!!** - not finished :-( yeah... \m/)
+
 ### Overview
 ### Searchable symmetric encryption
 ### Distributed hash table
