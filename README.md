@@ -9,7 +9,7 @@ Originally, distributed database is not efficient due to communication cost and 
 The project is divided into three part.
 * Initiate the system
 * Search the file address
-* File retrieval -> FOCUS ON THIS :)
+* File retrieval -> FOCUS ON THIS 
 
 
 ```Bash
@@ -31,15 +31,15 @@ src
 * Generates encryption key (AES-128 yeah :v)
 * Encrypts the file collection.
 * Encrypts inverted index (In form of: "keyword", "bitmap"). Bitmap should be n-bit where n is number of document in file collection
-* Send it to network (aka. nearest node) (DHT //**TODO!!** - not finished :-( yeah... \m/)
+* Send it to network (aka. nearest node) (DHT //**TODO!!** - not finished)
 
 
 //Server side
-* Distributed the index due to hash range (DHT //**TODO!!** - not finished :-( yeah... \m/)
+* Distributed the index due to hash range (DHT //**TODO!!** - not finished)
 * repeat until index is empty
 
 ### Search the file address 
-(//**TODO!!** - not finished :-( yeah... \m/)
+(//**TODO!!** - not finished)
 //Client side
 * Generates token using the keyword and secret key
 * send <token, gamma> to the network
@@ -50,7 +50,7 @@ src
 
 ### File retrieval
 
-(//**TODO!!** - not finished :-( yeah... \m/)
+(//**TODO!!** - not finished)
 
 //Client side
 * Decrypts the index to get the Bitmap
@@ -65,7 +65,7 @@ src
 
 ## Implementation guides
 
-(//**TODO!!** - not finished :-( yeah... \m/)
+(//**TODO!!** - not finished)
 
 ### Overview
 ### Searchable symmetric encryption
