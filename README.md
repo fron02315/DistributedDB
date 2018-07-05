@@ -5,7 +5,15 @@ The white paper will be released soon.
 This project is regarding from my project course. The project proposed to provide search operation on distributed file storage.
 Originally, distributed database is not efficient due to communication cost and routing complexity. 
 
-## Getting Started
+## Getting start
+
+Start with
+
+```Bash
+$ go get github.com/fron02315/DistributedDB
+```
+
+## Project methodology
 The project is divided into three part.
 * Initiate the system
 * Search the file address
@@ -28,7 +36,7 @@ src
 
 ### Initiate the system 
 //Client side
-* Generates encryption key (AES-128 yeah :v)
+* Generates encryption key (AES-128)
 * Encrypts the file collection.
 * Encrypts inverted index (In form of: "keyword", "bitmap"). Bitmap should be n-bit where n is number of document in file collection
 * Send it to network (aka. nearest node) (DHT //**TODO!!** - not finished)
@@ -63,14 +71,6 @@ src
 * Otherwise, sends the wantlist to neighbor node.
 * Repeat them until received the "cancle" message.
 
-## Implementation guides
-
-(//**TODO!!** - not finished)
-
-### Overview
-### Searchable symmetric encryption
-### Distributed hash table
-### Bitswap protocol
 
 
 
