@@ -80,7 +80,21 @@ Helper commands:
 
 ```Bash
 
+Commands
+  help         help guide to specify each available commands
+	quit         exit the console
+  keygen     	 Key generation- automatically stored on local machine
 
+Initiate commands:
+  insertI <keyword> <bitmap>  construct the inverted index
+  fileEn <inputfile>      		encrypt the target file
+  fileDe <inputfile>      		decrypt the target file
+
+Search commands:
+  searchKey <keyword> 	Search the keyword
+
+Update commands:
+	updatekey <keyword> <bitmap>	Update the bitmap of corresponding keyword.
 
  
 ```
