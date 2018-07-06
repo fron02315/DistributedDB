@@ -49,6 +49,7 @@ src
 
 ### Search the file address 
 (//**TODO!!** - not finished)
+
 //Client side
 * Generates token using the keyword and secret key
 * send <token, gamma> to the network
@@ -73,5 +74,15 @@ src
 * Repeat them until received the "cancle" message.
 
 
+## User Guide 
+
+Helper commands:
+
+```Bash
+
+
+
+ 
+```
 
 
