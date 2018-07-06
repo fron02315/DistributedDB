@@ -82,7 +82,7 @@ Helper commands:
 
 Commands
   help         help guide to specify each available commands
-	quit         exit the console
+  quit         exit the console
   keygen     	 Key generation- automatically stored on local machine
 
 Initiate commands:
@@ -94,7 +94,7 @@ Search commands:
   searchKey <keyword> 	Search the keyword
 
 Update commands:
-	updatekey <keyword> <bitmap>	Update the bitmap of corresponding keyword.
+  updatekey <keyword> <bitmap>	Update the bitmap of corresponding keyword.
 
  
 ```
