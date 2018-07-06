@@ -25,9 +25,10 @@ The project is divided into three part.
 src                 
 ├── main  # Main source code folder
 │   ├── init
-│   │    ├── AES.go
+│   │    ├── FileEncryption.go
+│   │    ├── IndexEncryption.go
 │   │    ├── keygen.go
-│   │    └── database.go
+│   │    └── keyword-database.go
 │   └── main-initiate.go #Set up
 ├── pkg        
 └── bin          
