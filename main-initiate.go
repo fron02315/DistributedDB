@@ -4,58 +4,155 @@ import (
 	initiate "./init"
 
 	"fmt"
-	//"crypto/aes"
-	//"crypto/cipher"
-	//"crypto/rand"
-	//"encoding/hex"
-	//"crypto/md5"
-	//"encoding/base64"
-	//"fmt"
-	//"io"
-	//"os"
-	//"bytes"
-	//"io/ioutil"
-	//"errors"
+	"bufio"
+	"os"
+	"strings"
 )
 
-
-
-
-
-func main() {
-	keyword := "Fon"
-	//bitmap := "10001000"
-
+func keygen(){
+	//If fisrt time == true
 	//Keygenerate and collect on filename
-	/*Filename := "dat2" //dat2 is key stored  file
-	initiate.Keygen(Filename)*/
+	Filename := "dat2" //dat2 is key stored  file
+	initiate.Keygen(Filename)
+}
 
-	//This section is file encryption and decryption
-	//Requirement: file name "1"
-  /*initiate.Encryptfile("1","a_aes.txt")
-  initiate.Decryptfile("a_aes.txt","test.txt")*/
+func insertIndex(keyword string, bitmap string){
+	cipher, token, _ := initiate.Encryptkeyword(bitmap, keyword)
 
-	//Keyword encrypytion
-	/*cipher, token, gamma := initiate.Encryptkeyword(bitmap, keyword)
-	fmt.Println(cipher)
-	fmt.Println(keyword)
-	fmt.Println(token)
-	fmt.Println(gamma) */
+	//Connect to database
+	db := initiate.Openconnection()
 
 	//insert into database
-	/*db := initiate.Openconnection()
-	initiate.InsertKey(db, token, cipher)*/
+	initiate.InsertKey(db, token, cipher)
 
+	db.Close()
+}
+
+func fileDecryption(inFile string, outFile string){
+	initiate.Decryptfile(inFile,outFile)
+}
+
+func searchKeyword(keyword string){
 	//Create token for Search
-	token, gamma := initiate.KeyGenBitswap(keyword)
+	token1, gamma1 := initiate.KeyGenBitswap(keyword)
+
+	//Connect to database
+	db := initiate.Openconnection()
 
 	//search for the specific keyword
-	
-	cipher := "CDtXp3pU2EhRlh2NOlHJ4pmJ706qmLmK"
+	EnBitmap := initiate.Search(db, token1)
 
 	//This section is keyword decryption-> take bitmap to retrieve the files
-	key := []byte(gamma)
-	word := initiate.Decryptkeyword(key,cipher)
+	key := []byte(gamma1)
+	Bitmap := initiate.Decryptkeyword(key,EnBitmap)
+	fmt.Println(Bitmap)
+
+	db.Close()
+}
+
+func updateKeyword(keyword string, bitmap string){
+	db := initiate.Openconnection()
+
+	initiate.UpdateTable(db, "Egyptian", "00000001")
+
+	db.Close()
+
+}
+
+//CMD function \m/
+func getInput() ([]string, error) {
+	b := bufio.NewReader(os.Stdin)
+	line, err := b.ReadString('\n')
+	if err != nil {
+		return []string{}, err
+	}
+	return strings.Split(strings.TrimSpace(line), " "), nil
+}
+
+func helpFn(){
+	fmt.Println(`Available commands:
+Commands
+  help         help guide to specify each available commands
+  quit         exit the console
+  keygen     	 Key generation- automatically stored on local machine
+
+Initiate commands:
+  insertI <keyword,bitmap>  				construct the inverted index
+  fileEn <inputfile,outputfile>    	encrypt the target file
+  fileDe <inputfile,outputfile>     decrypt the target file
+
+Search commands:
+  searchKey <keyword> 	Search the keyword
+
+Update commands:
+  updateKey <keyword,bitmap>	Update the bitmap of corresponding keyword.
+`)
+}
+
+func Call(function string) {
+	switch {
+		case strings.TrimRight(function, "\n") ==  "help": helpFn()
+		case strings.TrimRight(function, "\n") ==  "quit": os.Exit(1)
+		case strings.TrimRight(function, "\n") ==  "keygen": keygen()
+		case strings.TrimRight(function, "\n") ==  "insertI":
+			reader := bufio.NewReader(os.Stdin)
+			fmt.Print("keyword: ")
+			keyword1, _ := reader.ReadString('\n')
+			keyword := strings.TrimRight(keyword1, "\n")
+			fmt.Print("bitmap: ")
+			bitmap1, _ := reader.ReadString('\n')
+			bitmap := strings.TrimRight(bitmap1, "\n")
+			insertIndex(keyword, bitmap)
+		case strings.TrimRight(function, "\n") ==  "fileEn":
+			reader := bufio.NewReader(os.Stdin)
+			fmt.Print("Input file: ")
+			input1, _ := reader.ReadString('\n')
+			input := strings.TrimRight(input1, "\n")
+			fmt.Print("Output file: ")
+			output1, _ := reader.ReadString('\n')
+			output := strings.TrimRight(output1, "\n")
+			initiate.Encryptfile(input, output)
+		case strings.TrimRight(function, "\n") ==  "fileDe":
+			reader := bufio.NewReader(os.Stdin)
+			fmt.Print("Input file: ")
+			input1, _ := reader.ReadString('\n')
+			input := strings.TrimRight(input1, "\n")
+			fmt.Print("Output file: ")
+			output1, _ := reader.ReadString('\n')
+			output := strings.TrimRight(output1, "\n")
+			initiate.Decryptfile(input, output)
+		case strings.TrimRight(function, "\n") ==  "searchKey":
+			reader := bufio.NewReader(os.Stdin)
+			fmt.Print("keyword: ")
+			keyword1, _ := reader.ReadString('\n')
+			keyword := strings.TrimRight(keyword1, "\n")
+			searchKeyword(keyword)
+		case strings.TrimRight(function, "\n") ==  "updateKey":
+			reader := bufio.NewReader(os.Stdin)
+			fmt.Print("Update Bitmap where Keyword is: ")
+			input1, _ := reader.ReadString('\n')
+			input := strings.TrimRight(input1, "\n")
+			fmt.Print("New Bitmap: ")
+			output1, _ := reader.ReadString('\n')
+			output := strings.TrimRight(output1, "\n")
+			initiate.Decryptfile(input, output)
+		default:helpFn()
+		}
+}
+
+func main() {
+	cmd := "DFS-Console> "
 
 
+	fmt.Println(`Welcome to Our Distributed file storage demonstration. `)
+	fmt.Println(`Type "help" to learn the available commands`)
+	//helpFn()
+	for {
+		fmt.Printf(cmd)
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Print("Enter command: ")
+    text, _ := reader.ReadString('\n')
+
+    Call(text)
+	}
 }
