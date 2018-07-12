@@ -11,8 +11,6 @@ import (
 	"unsafe"
 )
 
-
-
 func keygen(){
 	//If fisrt time == true
 	//Keygenerate and collect on filename
@@ -36,14 +34,11 @@ func insertIndex(keyword string, bitmap string, bc *block.Blockchain){
 	//size of data exchange
 	msgsize := fmt.Sprint(unsafe.Sizeof(keyword))
 
-	block.AddBlock(bc,"client", "peer", msgsize)
+	//add the transactin to blockchain
+	block.AddBlock(bc,"client", "peer", "insert keyword", msgsize)
 }
 
-func fileDecryption(inFile string, outFile string){
-	initiate.Decryptfile(inFile,outFile)
-}
-
-func searchKeyword(keyword string){
+func searchKeyword(keyword string, bc *block.Blockchain){
 	//Create token for Search
 	token1, gamma1 := initiate.KeyGenBitswap(keyword)
 
@@ -52,7 +47,6 @@ func searchKeyword(keyword string){
 
 	//search for the specific keyword
 	EnBitmap := initiate.Search(db, token1)
-
 	//This section is keyword decryption-> take bitmap to retrieve the files
 	key := []byte(gamma1)
 	Bitmap := initiate.Decryptkeyword(key,EnBitmap)
@@ -60,34 +54,58 @@ func searchKeyword(keyword string){
 	fmt.Println(unsafe.Sizeof(Bitmap)) //Print the message size
 
 	db.Close()
+
+	//size of data exchange
+	msgsize := fmt.Sprint(unsafe.Sizeof(keyword))
+	//add the transactin to blockchain
+	block.AddBlock(bc, "client", "peer", "search keyword", msgsize)
 }
 
-func updateKeyword(keyword string, bitmap string){
-	db := initiate.Openconnection()
+func updateKeyword(keyword string, bitmap string, bc *block.Blockchain){
+	cipher, token, _ := initiate.Encryptkeyword(bitmap, keyword)
 
-	initiate.UpdateTable(db, "Egyptian", "00000001")
+	db := initiate.Openconnection()
+	initiate.UpdateTable(db, token, cipher)
 
 	db.Close()
 
+	msgsize := fmt.Sprint(unsafe.Sizeof(keyword))
+	//add the transactin to blockchain
+	block.AddBlock(bc,"client", "peer", "Keyword Update", msgsize)
 }
 
-//CMD function \m/
-func getInput() ([]string, error) {
-	b := bufio.NewReader(os.Stdin)
-	line, err := b.ReadString('\n')
-	if err != nil {
-		return []string{}, err
-	}
-	return strings.Split(strings.TrimSpace(line), " "), nil
+func Encryptfile(input string, output string, bc *block.Blockchain){
+	initiate.Encryptfile(input, output)
+
+	//File input stat
+	fi,_ := os.Stat(input)
+	//size of data exchange
+	msgsize := fmt.Sprint(fi.Size())
+
+//add the transactin to blockchain
+	block.AddBlock(bc,"client", "peer", "file Encryption", msgsize)
 }
 
+func Decryptfile(input string, output string, bc *block.Blockchain){
+	initiate.Encryptfile(input, output)
+
+	//File input stat
+	fi,_ := os.Stat(input)
+	//size of data exchange
+	msgsize := fmt.Sprint(fi.Size())
+
+	//add the transactin to blockchain
+	block.AddBlock(bc,"client", "peer", "file Decryption", msgsize)
+}
+
+//Help function here
 func helpFn(){
 	fmt.Println(`Available commands:
 Commands
   help         help guide to specify each available commands
   quit         exit the console
-  keygen         Key generation- automatically stored on local machine
-  blockchain         Blockchain lookup
+  keygen       Key generation- automatically stored on local machine
+  blockchain   Blockchain lookup
 
 Initiate commands:
   insertI <keyword,bitmap>  				construct the inverted index
@@ -126,7 +144,7 @@ func Call(function string, bc *block.Blockchain) {
 			fmt.Print("Output file: ")
 			output1, _ := reader.ReadString('\n')
 			output := strings.TrimRight(output1, "\n")
-			initiate.Encryptfile(input, output)
+			Encryptfile(input, output, bc)
 		case strings.TrimRight(function, "\n") ==  "fileDe":
 			reader := bufio.NewReader(os.Stdin)
 			fmt.Print("Input file: ")
@@ -135,13 +153,13 @@ func Call(function string, bc *block.Blockchain) {
 			fmt.Print("Output file: ")
 			output1, _ := reader.ReadString('\n')
 			output := strings.TrimRight(output1, "\n")
-			initiate.Decryptfile(input, output)
+			Decryptfile(input, output, bc)
 		case strings.TrimRight(function, "\n") ==  "searchKey":
 			reader := bufio.NewReader(os.Stdin)
 			fmt.Print("keyword: ")
 			keyword1, _ := reader.ReadString('\n')
 			keyword := strings.TrimRight(keyword1, "\n")
-			searchKeyword(keyword)
+			searchKeyword(keyword, bc)
 		case strings.TrimRight(function, "\n") ==  "updateKey":
 			reader := bufio.NewReader(os.Stdin)
 			fmt.Print("Update Bitmap where Keyword is: ")
@@ -150,7 +168,7 @@ func Call(function string, bc *block.Blockchain) {
 			fmt.Print("New Bitmap: ")
 			output1, _ := reader.ReadString('\n')
 			output := strings.TrimRight(output1, "\n")
-			initiate.Decryptfile(input, output)
+			updateKeyword(input, output, bc)
 		default:helpFn()
 		}
 }
