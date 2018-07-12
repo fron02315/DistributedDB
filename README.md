@@ -88,7 +88,8 @@ Helper commands:
 Commands
   help         help guide to specify each available commands
   quit         exit the console
-  keygen     	 Key generation- automatically stored on local machine
+  keygen       Key generation- automatically stored on local machine
+  blockchain   Blockchain lookup
 
 Initiate commands:
   insertI <keyword> <bitmap>  construct the inverted index
