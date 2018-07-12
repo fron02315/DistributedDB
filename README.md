@@ -29,7 +29,9 @@ src
 │   │    ├── IndexEncryption.go
 │   │    ├── keygen.go
 │   │    └── keyword-database.go
-│   └── main-initiate.go #Set up
+│   ├── blockchain
+│   │    └── Blockchain-clientside.go
+│   └── main-initiate.go 
 ├── pkg        
 └── bin          
  
@@ -72,6 +74,9 @@ src
 * If the node contains the target file, the storage node decides the resource allocation. Then, sends the file collection to client according to bitswap strategies.
 * Otherwise, sends the wantlist to neighbor node.
 * Repeat them until received the "cancle" message.
+
+### Blockchain as file transaction audit
+* Each file transaction is recorded on the blockchain.
 
 
 ## User Guide 
