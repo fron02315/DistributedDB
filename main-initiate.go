@@ -2,12 +2,16 @@ package main
 
 import (
 	initiate "./init"
+	block "./blockchain"
 
 	"fmt"
 	"bufio"
 	"os"
 	"strings"
+	"unsafe"
 )
+
+
 
 func keygen(){
 	//If fisrt time == true
@@ -16,7 +20,7 @@ func keygen(){
 	initiate.Keygen(Filename)
 }
 
-func insertIndex(keyword string, bitmap string){
+func insertIndex(keyword string, bitmap string, bc *block.Blockchain){
 	cipher, token, _ := initiate.Encryptkeyword(bitmap, keyword)
 
 	//Connect to database
@@ -25,7 +29,14 @@ func insertIndex(keyword string, bitmap string){
 	//insert into database
 	initiate.InsertKey(db, token, cipher)
 
+	fmt.Println("Successfully Insert keyword",keyword)
+
 	db.Close()
+
+	//size of data exchange
+	msgsize := fmt.Sprint(unsafe.Sizeof(keyword))
+
+	block.AddBlock(bc,"client", "peer", msgsize)
 }
 
 func fileDecryption(inFile string, outFile string){
@@ -46,6 +57,7 @@ func searchKeyword(keyword string){
 	key := []byte(gamma1)
 	Bitmap := initiate.Decryptkeyword(key,EnBitmap)
 	fmt.Println(Bitmap)
+	fmt.Println(unsafe.Sizeof(Bitmap)) //Print the message size
 
 	db.Close()
 }
@@ -74,7 +86,8 @@ func helpFn(){
 Commands
   help         help guide to specify each available commands
   quit         exit the console
-  keygen     	 Key generation- automatically stored on local machine
+  keygen         Key generation- automatically stored on local machine
+  blockchain         Blockchain lookup
 
 Initiate commands:
   insertI <keyword,bitmap>  				construct the inverted index
@@ -89,11 +102,13 @@ Update commands:
 `)
 }
 
-func Call(function string) {
+func Call(function string, bc *block.Blockchain) {
 	switch {
 		case strings.TrimRight(function, "\n") ==  "help": helpFn()
 		case strings.TrimRight(function, "\n") ==  "quit": os.Exit(1)
 		case strings.TrimRight(function, "\n") ==  "keygen": keygen()
+		case strings.TrimRight(function, "\n") ==  "blockchain":
+			block.PrintBC(bc)
 		case strings.TrimRight(function, "\n") ==  "insertI":
 			reader := bufio.NewReader(os.Stdin)
 			fmt.Print("keyword: ")
@@ -102,7 +117,7 @@ func Call(function string) {
 			fmt.Print("bitmap: ")
 			bitmap1, _ := reader.ReadString('\n')
 			bitmap := strings.TrimRight(bitmap1, "\n")
-			insertIndex(keyword, bitmap)
+			insertIndex(keyword, bitmap, bc)
 		case strings.TrimRight(function, "\n") ==  "fileEn":
 			reader := bufio.NewReader(os.Stdin)
 			fmt.Print("Input file: ")
@@ -143,6 +158,7 @@ func Call(function string) {
 func main() {
 	cmd := "DFS-Console> "
 
+	bc := block.NewBlockchain()
 
 	fmt.Println(`Welcome to Our Distributed file storage demonstration. `)
 	fmt.Println(`Type "help" to learn the available commands`)
@@ -153,6 +169,6 @@ func main() {
 		fmt.Print("Enter command: ")
     text, _ := reader.ReadString('\n')
 
-    Call(text)
+    Call(text,bc)
 	}
 }
