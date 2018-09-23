@@ -7,6 +7,10 @@ Originally, distributed database is not efficient due to communication cost and 
 
 ## Getting start
 
+### Material need
+* Docker
+* Hyperledger private blockchain (Nodejs)
+
 Start with
 
 ```Bash
